@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Lanka 360° - Summer Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pastel-blue': '#E6F3FF',
+                        'pastel-green': '#E8F5E8',
+                        'pastel-coral': '#FFE8E1',
+                        'pastel-lavender': '#F0E6FF',
+                        'soft-teal': '#B8E6E1',
+                        'warm-sand': '#F5F1E8'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .countdown-item {
+            background: linear-gradient(135deg, #E6F3FF 0%, #B8E6E1 100%);
+        }
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        .nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .section-hidden {
+            display: none;
+        }
+        .itinerary-day {
+            transition: all 0.3s ease;
+        }
+        .itinerary-day:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-warm-sand via-pastel-blue to-pastel-green min-h-screen">
+    <!-- Header -->
+    <header class="relative h-64 md:h-80 overflow-hidden">
+        <img src="https://strapi-imaginary.weroad.it/resource/webp-large/1131/viaggio-di-gruppo-in-sri-lanka.webp" 
+             alt="Sri Lanka" 
+             class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+            <div class="text-center text-white">
+                <h1 class="text-2xl md:text-4xl font-bold mb-0">Sri Lanka 360°</h1>
+                <p class="text-sm md:text-base opacity-90 mb-3 uppercase tracking-wide font-medium">Summer Edition</p>
+                <p class="text-xs md:text-sm opacity-80 tracking-wider font-medium">TURNO 18 AGOSTO - 29 AGOSTO 2025</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Countdown -->
+    <section class="py-6 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">Countdown alla Partenza</h2>
+            <div id="countdown" class="flex justify-center space-x-2 md:space-x-4">
+                <div class="countdown-item rounded-lg p-3 md:p-4 text-center min-w-16">
+                    <div id="days" class="text-xl md:text-2xl font-bold text-gray-800">0</div>
+                    <div class="text-xs md:text-sm text-gray-600">Giorni</div>
+                </div>
+                <div class="countdown-item rounded-lg p-3 md:p-4 text-center min-w-16">
+                    <div id="hours" class="text-xl md:text-2xl font-bold text-gray-800">0</div>
+                    <div class="text-xs md:text-sm text-gray-600">Ore</div>
+                </div>
+                <div class="countdown-item rounded-lg p-3 md:p-4 text-center min-w-16">
+                    <div id="minutes" class="text-xl md:text-2xl font-bold text-gray-800">0</div>
+                    <div class="text-xs md:text-sm text-gray-600">Min</div>
+                </div>
+                <div class="countdown-item rounded-lg p-3 md:p-4 text-center min-w-16">
+                    <div id="seconds" class="text-xl md:text-2xl font-bold text-gray-800">0</div>
+                    <div class="text-xs md:text-sm text-gray-600">Sec</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Cards -->
+    <section class="py-4 px-4">
+        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="bg-pastel-coral rounded-lg p-3 text-center">
+                <div class="text-lg font-bold text-gray-800">12</div>
+                <div class="text-xs text-gray-600">📅 Giorni</div>
+            </div>
+            <div class="bg-pastel-lavender rounded-lg p-3 text-center">
+                <div class="text-lg font-bold text-gray-800">9</div>
+                <div class="text-xs text-gray-600">👥 Persone</div>
+            </div>
+            <div class="bg-soft-teal rounded-lg p-3 text-center">
+                <div class="text-lg font-bold text-gray-800">∞</div>
+                <div class="text-xs text-gray-600">🎯 Attività</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <nav class="py-6 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <button onclick="showSection('dashboard')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">🏠</div>
+                    <div class="text-xs font-medium">Dashboard</div>
+                </button>
+                <button onclick="showSection('intro')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">📖</div>
+                    <div class="text-xs font-medium">Intro</div>
+                </button>
+                <button onclick="showSection('guida')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">🏛️</div>
+                    <div class="text-xs font-medium">Guida SL</div>
+                </button>
+                <button onclick="showSection('itinerario')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">🗺️</div>
+                    <div class="text-xs font-medium">Itinerario</div>
+                </button>
+                <button onclick="showSection('voli')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">✈️</div>
+                    <div class="text-xs font-medium">Voli</div>
+                </button>
+                <button onclick="showSection('packing')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">🎒</div>
+                    <div class="text-xs font-medium">Packing List</div>
+                </button>
+                <button onclick="showSection('checklist')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">✅</div>
+                    <div class="text-xs font-medium">Checklist</div>
+                </button>
+                <button onclick="showSection('cassa')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">💰</div>
+                    <div class="text-xs font-medium">Cassa Comune</div>
+                </button>
+                <button onclick="showSection('contatti')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">📞</div>
+                    <div class="text-xs font-medium">Info & Contatti</div>
+                </button>
+                <button onclick="showSection('weroad')" class="nav-item bg-white rounded-lg p-3 text-center shadow-sm border border-gray-200">
+                    <div class="text-lg mb-1">🌍</div>
+                    <div class="text-xs font-medium">WeRoad</div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Sections -->
+    <main class="px-4 pb-8">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Dashboard -->
+            <section id="dashboard" class="bg-white rounded-lg p-6 shadow-sm">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">Dashboard</h2>
+                <div class="space-y-4">
+                    <div class="bg-pastel-blue rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-2">Benvenuti nel vostro hub di viaggio!</h3>
+                        <p class="text-sm text-gray-600">Qui troverete tutte le informazioni essenziali per il nostro viaggio in Sri Lanka. Utilizzate il menu sopra per navigare tra le diverse sezioni.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-pastel-green rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">Prossimi Step</h4>
+                            <ul class="text-sm text-gray-600">
+                                <li>• Controllare la checklist</li>
+                                <li>• Preparare i documenti</li>
+                                <li>• Fare la valigia</li>
+                                <li>• Compilare excel per info su arrivo e partenze</li>
+                            </ul>
+                        </div>
+                        <div class="bg-pastel-coral rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">Contatti Rapidi</h4>
+                            <p class="text-sm text-gray-600">Sabrina (Coordinatrice)</p>
+                            <p class="text-xs text-gray-500">+39 3477257071</p>
+                            <p class="text-xs text-gray-500">cocosabrina.wr@gmail.com</p>
+                            <p class="text-xs text-gray-500">sabrina_coco@hotmail.it</p>
+                            <p class="text-xs text-gray-500">📸 @awild.coco (Instagram)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Intro -->
+            <section id="intro" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">📖 Introduzione al Viaggio</h2>
+                <div class="space-y-4">
+                    <div class="bg-pastel-lavender rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-2">🏝️ Sri Lanka Summer Edition</h3>
+                        <p class="text-sm text-gray-600 mb-3">Un'avventura di 12 giorni alla scoperta della "Lacrima dell'Oceano Indiano" 💎. Dalle antiche città storiche alle spiagge paradisiache 🏖️, dalle piantagioni di tè 🍃 alle riserve naturali 🐘.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div class="bg-white rounded p-3">
+                                <h4 class="text-sm font-medium text-gray-800">✨ Highlights</h4>
+                                <ul class="text-xs text-gray-600 mt-1 space-y-1">
+                                    <li>🏰 Fortezza di Galle patrimonio UNESCO</li>
+                                    <li>🐘 Safari a Udawalawe National Park</li>
+                                    <li>🚂 Treno panoramico verso Ella</li>
+                                    <li>🍃 Piantagioni di tè a Nuwara Eliya</li>
+                                    <li>🏛️ Triangolo culturale: Sigiriya, Polonnaruwa, Anuradhapura</li>
+                                    <li>🏖️ Spiagge di Trincomalee e Pasikudah</li>
+                                </ul>
+                            </div>
+                            <div class="bg-white rounded p-3">
+                                <h4 class="text-sm font-medium text-gray-800">🎯 Esperienze</h4>
+                                <ul class="text-xs text-gray-600 mt-1 space-y-1">
+                                    <li>🍛 Cucina locale autentica</li>
+                                    <li>🐘 Incontri con elefanti</li>
+                                    <li>🏖️ Relax sulle spiagge</li>
+                                    <li>🎭 Cultura e tradizioni</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Guida Sri Lanka -->
+            <section id="guida" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">🏛️ Guida Sri Lanka</h2>
+                <div class="space-y-4">
+                    <div class="bg-soft-teal rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-2">📚 Storia e Cultura</h3>
+                        <p class="text-sm text-gray-600 mb-3">Lo Sri Lanka vanta oltre 2.500 anni di storia documentata 📜. L'isola fu abitata dai Veddah, popolazioni indigene, prima dell'arrivo dei Sinhalesi nel VI secolo a.C. Il Buddhismo arrivò nel III secolo a.C. e divenne la religione dominante.</p>
+                        <p class="text-sm text-gray-600 mb-3">Il regno di Anuradhapura (377 a.C. - 1017 d.C.) fu seguito da quello di Polonnaruwa (1055-1212). L'isola subì poi le dominazioni coloniali: portoghesi 🇵🇹 (1505-1658), olandesi 🇳🇱 (1658-1796) e britanniche 🇬🇧 (1796-1948).</p>
+                        <p class="text-sm text-gray-600">Il paese ottenne l'indipendenza nel 1948 come Ceylon, diventando Sri Lanka nel 1972. La cultura è un mix affascinante di tradizioni antiche e influenze coloniali ✨.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-pastel-blue rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">🙏 Religione</h4>
+                            <p class="text-sm text-gray-600">70% Buddhista ☸️, 12% Hindu 🕉️, 10% Musulmana ☪️, 8% Cristiana ✝️</p>
+                        </div>
+                        <div class="bg-pastel-green rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">🗣️ Lingue</h4>
+                            <p class="text-sm text-gray-600">Sinhala, Tamil, Inglese (ampiamente parlato) 🌍</p>
+                        </div>
+                        <div class="bg-pastel-coral rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">💱 Valuta</h4>
+                            <p class="text-sm text-gray-600">Rupia dello Sri Lanka (LKR) 💰</p>
+                        </div>
+                        <div class="bg-pastel-lavender rounded-lg p-4">
+                            <h4 class="font-medium text-gray-800 mb-2">🌡️ Clima</h4>
+                            <p class="text-sm text-gray-600">Tropicale ☀️, 26-30°C. Ad agosto: costa ovest stagione secca 🌤️, costa est possibili piogge 🌧️</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Itinerario -->
+            <section id="itinerario" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">🗺️ Itinerario Dettagliato</h2>
+                <div class="space-y-3">
+                    <div class="itinerary-day bg-pastel-blue rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">✈️ Giorno 1 - Arrivo a Negombo</h3>
+                    </div>
+                    
+                    <div class="itinerary-day bg-pastel-green rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🏰 Giorno 2 - Galle</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-pastel-coral rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🐘 Giorno 3 - Udawalawe National Park</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-pastel-lavender rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🚂 Giorno 4 - Ella</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-soft-teal rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🍃 Giorno 5 - Distretto di Nuwara Eliya</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-pastel-blue rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">👑 Giorno 6 - Kandy</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-pastel-green rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🏛️ Giorno 7 - Dambulla</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-pastel-coral rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🦁 Giorno 8 - Sigiriya e Polonnaruwa</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-pastel-lavender rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🏖️ Giorno 9 - Trincomalee/Pasikudah</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-soft-teal rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🏖️ Giorno 10 - Trincomalee/Pasikudah</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-pastel-blue rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">🏛️ Giorno 11 - Anuradhapura</h3>
+                    </div>
+
+                    <div class="itinerary-day bg-pastel-green rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800">✈️ Giorno 12 - Negombo/Colombo - Partenza</h3>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Voli -->
+            <section id="voli" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">✈️ Informazioni Voli</h2>
+                <div class="bg-pastel-blue rounded-lg p-4 mb-4">
+                    <p class="text-sm text-gray-600 mb-2">Per i dettagli completi sui voli, consultare il documento condiviso:</p>
+                    <a href="https://docs.google.com/spreadsheets/d/1-PNY6tGfJt9N0XqVvHytJa-K6aFCYxxi9S6cjSIuc_s/edit?pli=1&gid=0#gid=0" 
+                       target="_blank" 
+                       class="inline-block bg-white px-4 py-2 rounded text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors">
+                        📊 Visualizza Tabella Voli
+                    </a>
+                </div>
+                <div class="space-y-3">
+                    <div class="bg-pastel-green rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-2">Informazioni Generali</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Check-in online 24h prima</li>
+                            <li>• Arrivo in aeroporto 3h prima per voli internazionali</li>
+                            <li>• Bagaglio a mano: max 8kg</li>
+                            <li>• Bagaglio in stiva: max 23kg</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Packing List -->
+            <section id="packing" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">🎒 Packing List</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-pastel-coral rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Abbigliamento</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• T-shirt leggere (5-6)</li>
+                            <li>• Pantaloni lunghi leggeri (2-3)</li>
+                            <li>• Shorts (3-4)</li>
+                            <li>• Costume da bagno (2)</li>
+                            <li>• Felpa leggera per la sera</li>
+                            <li>• Scarpe da trekking</li>
+                            <li>• Infradito/sandali</li>
+                            <li>• Cappello/bandana</li>
+                        </ul>
+                    </div>
+                    <div class="bg-pastel-lavender rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Essenziali</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Passaporto + copie</li>
+                            <li>• Assicurazione viaggio</li>
+                            <li>• Crema solare SPF 50+</li>
+                            <li>• Repellente zanzare</li>
+                            <li>• Kit primo soccorso</li>
+                            <li>• Powerbank</li>
+                            <li>• Adattatore universale</li>
+                            <li>• Borraccia</li>
+                        </ul>
+                    </div>
+                    <div class="bg-soft-teal rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Farmaci</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Antidiarroico</li>
+                            <li>• Paracetamolo/Ibuprofene</li>
+                            <li>• Fermenti lattici</li>
+                            <li>• Farmaci contro la nausea</li>
+                            <li>• Cerotti e disinfettante</li>
+                            <li>• Farmaci personali</li>
+                        </ul>
+                    </div>
+                    <div class="bg-pastel-green rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Elettronica</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Smartphone + caricatore</li>
+                            <li>• Fotocamera</li>
+                            <li>• Cuffie</li>
+                            <li>• Powerbank</li>
+                            <li>• Cavi USB</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Checklist -->
+            <section id="checklist" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">✅ Checklist Pre-Partenza</h2>
+                <div class="space-y-4">
+                    <div class="bg-pastel-blue rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Documenti (da fare ASAP)</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm text-gray-600">Richiedere ETA (Electronic Travel Authorization)</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm text-gray-600">Compilare Arrival Card online</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm text-gray-600">Verificare validità passaporto (min. 6 mesi)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bg-pastel-green rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Banca e Denaro</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm text-gray-600">Avvisare la banca del viaggio</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm text-gray-600">Verificare limiti prelievo all'estero</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm text-gray-600">Prelevare contanti per cambio locale</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bg-pastel-coral rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Salute</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm text-gray-600">Copia assicurazione WeRoad</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" class="rounded">
+                                <span class="text-sm text-gray-600">Preparare kit farmaci personali</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cassa Comune -->
+            <section id="cassa" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">💰 Cassa Comune</h2>
+                <div class="bg-pastel-lavender rounded-lg p-4 space-y-4">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-4">La cassa comune è un piccolo tesoro che mettiamo insieme per coprire quelle attività e servizi che non sono inclusi nel pacchetto standard del viaggio. 🏝️</p>
+                        <p class="text-sm text-gray-600 mb-4">Ogni partecipante deve contribuire con la sua parte al coordinatore del viaggio all'inizio del tour, durante il primo incontro di benvenuto, in moneta locale. 💵</p>
+                        <p class="text-sm text-gray-600 mb-4">Per questo tour, l'importo previsto per la cassa comune è di <strong>250 euro</strong>. Ma attenzione! Questa cifra potrebbe variare, a seconda delle attività che il gruppo deciderà di fare. La cassa comune serve a togliervi dal pensiero di pagare ogni giorno per ogni cosa. Il coordinatore se ne occupa, così vi rilassate e godete l'avventura! 😎</p>
+                    </div>
+                    
+                    <div class="bg-white rounded p-3">
+                        <h4 class="text-sm font-medium text-gray-800 mb-2">✅ Cosa include la cassa comune:</h4>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li>🌍 Attività extra scelte dal gruppo (biglietti per musei, escursioni, passeggiate turistiche)</li>
+                            <li>🛣️ Tasse e pedaggi (perché ci sono sempre da pagare!)</li>
+                            <li>🚗 Trasporti locali (salite in tuk tuk, jeep e chi più ne ha più ne metta)</li>
+                            <li>👏 Mance generali (per premiare i nostri fantastici autisti e guide)</li>
+                            <li>😉 La quota del coordinatore (sì, proprio quella persona che vi farà divertire e scoprire ogni angolo del paese)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded p-3">
+                        <h4 class="text-sm font-medium text-gray-800 mb-2">❌ Cosa NON è incluso:</h4>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li>🍕🍜 Cibo o pasti, a meno che non si tratti di un menù fisso. Ognuno ha i suoi gusti, giusto?</li>
+                            <li>👥 Quando il gruppo si divide in sottogruppi per attività diverse</li>
+                        </ul>
+                    </div>
+                    
+                    <p class="text-sm text-gray-600 italic">Il coordinatore terrà traccia di tutte le spese fatte con la cassa comune e ogni tanto vi aggiornerà con un bel riepilogo. Così saprete sempre quanto manca prima di arrivare alla fine del viaggio con il sorriso! 😄</p>
+                </div>
+            </section>
+
+            <!-- Contatti -->
+            <section id="contatti" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">Info Utili & Contatti</h2>
+                <div class="space-y-4">
+                    <div class="bg-pastel-coral rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Sabrina - Coordinatrice</h3>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <p>📧 cocosabrina.wr@gmail.com</p>
+                            <p>📧 sabrina_coco@hotmail.it</p>
+                            <p>📱 +39 3477257071</p>
+                            <p>📸 @awild.coco</p>
+                        </div>
+                    </div>
+                    <div class="bg-soft-teal rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Contatti di Emergenza Sri Lanka</h3>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <p>🚨 Polizia: 119</p>
+                            <p>🚑 Ambulanza: 110</p>
+                            <p>🚒 Vigili del Fuoco: 111</p>
+                            <p>🏥 Emergenze Turistiche: 1912</p>
+                        </div>
+                    </div>
+                    <div class="bg-pastel-blue rounded-lg p-4">
+                        <h3 class="font-medium text-gray-800 mb-3">Ambasciata Italiana</h3>
+                        <div class="space-y-1 text-sm text-gray-600">
+                            <p>📍 55, Jawatte Road, Colombo 5</p>
+                            <p>📞 +94 11 2588388</p>
+                            <p>📧 ambasciata.colombo@esteri.it</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WeRoad -->
+            <section id="weroad" class="bg-white rounded-lg p-6 shadow-sm section-hidden">
+                <h2 class="text-lg font-medium mb-4 text-gray-800 uppercase tracking-wide">🌍 WeRoad in a Nutshell</h2>
+                <div class="bg-pastel-green rounded-lg p-4 space-y-4">
+                    <div>
+                        <h3 class="font-medium text-gray-800 mb-2">🤔 Prima volta con WeRoad?</h3>
+                        <p class="text-sm text-gray-600 mb-4">Allora ti sarà utile sapere come funziona e cosa aspettarti:</p>
+                        <p class="text-sm text-gray-600 mb-4">WeRoad propone diversi tipi di viaggio e noi abbiamo scelto uno dei più belli: il <strong>360°</strong>. Questi viaggi sono intensi, pieni di avventure ed esperienze straordinarie. Se hai fortuna, riesci a dormire, ma se hai molta fortuna, dormi forse due ore a notte e ne sei felice perché a letto non ci vuoi proprio andare, come i bambini. 🛏️✨</p>
+                        <p class="text-sm text-gray-600 mb-4">Da queste parti ci piace conoscere il luogo, ma anche la gente che ci accompagna, che darà un sapore particolare e unico all'itinerario: ogni viaggio è diverso, ma anche ogni gruppo lo è! 🌍💬</p>
+                        <p class="text-sm text-gray-600 mb-4">Nello spirito della scoperta, anche il coordinatore è uno di voi, un compagno di viaggio. Ben lontano dall'essere una guida in Sri Lanka, sono tanto gasata quanto voi, con la differenza che WeRoad mi fornisce tutti gli strumenti per farvi passare 12 giorni indimenticabili e al tempo stesso farvi dimenticare di tutto il resto. 🚶‍♀️🎉</p>
+                        <p class="text-sm text-gray-600 mb-4">Questo è lo spirito WeRoad, ma se hai ancora domande... sai dove trovarmi! 👋💌</p>
+                    </div>
+                    
+                    <div class="bg-white rounded p-3">
+                        <h4 class="text-sm font-medium text-gray-800 mb-2">💫 I Valori WeRoad:</h4>
+                        <ul class="text-xs text-gray-600 space-y-1">
+                            <li>🌱 Viaggi autentici e sostenibili</li>
+                            <li>👥 Gruppi piccoli (max 12 persone)</li>
+                            <li>🏠 Esperienze locali genuine</li>
+                            <li>❤️ Community di viaggiatori appassionati</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Mappa -->
+    <section class="py-8 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-lg font-medium mb-4 text-gray-800 text-center uppercase tracking-wide">Mappa del Viaggio</h2>
+            <div class="bg-white rounded-lg p-4 shadow-sm">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2028035.2944842!2d79.86124!3d7.8731!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0xe13da4b400e2d38c!2sSri%20Lanka!5e0!3m2!1sit!2sit!4v1703123456789!5m2!1sit!2sit" 
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="rounded-lg">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Link Utili -->
+    <section class="py-6 px-4">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-lg font-medium mb-3 text-gray-800 text-center uppercase tracking-wide">LINK UTILI</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <a href="https://www.weroad.it/viaggi/viaggio-sri-lanka-estate" target="_blank" 
+                   class="bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow border border-gray-200 text-center">
+                    <div class="text-lg mb-1">🌍</div>
+                    <div class="text-xs font-medium text-gray-800 uppercase">WEROAD</div>
+                </a>
+                
+                <a href="https://www.viaggiaresicuri.it/country/LKA" target="_blank" 
+                   class="bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow border border-gray-200 text-center">
+                    <div class="text-lg mb-1">🛡️</div>
+                    <div class="text-xs font-medium text-gray-800 uppercase">SICUREZZA</div>
+                </a>
+                
+                <a href="https://www.eta.gov.lk/slvisa/" target="_blank" 
+                   class="bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow border border-gray-200 text-center">
+                    <div class="text-lg mb-1">📋</div>
+                    <div class="text-xs font-medium text-gray-800 uppercase">VISTO ETA</div>
+                </a>
+                
+                <a href="https://ambcolombo.esteri.it/it/" target="_blank" 
+                   class="bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow border border-gray-200 text-center">
+                    <div class="text-lg mb-1">🇮🇹</div>
+                    <div class="text-xs font-medium text-gray-800 uppercase">AMBASCIATA</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Countdown Timer
+        function updateCountdown() {
+            const targetDate = new Date('2025-08-18T00:00:00').getTime();
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Section Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('main section');
+            sections.forEach(section => {
+                section.classList.add('section-hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.remove('section-hidden');
+        }
+
+
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('dashboard');
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'969cd7ca26b5ee86',t:'MTc1NDI5NzgwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
