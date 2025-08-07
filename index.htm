@@ -165,7 +165,7 @@
                 <div class="text-xs text-slate-600 font-medium">📅 Giorni</div>
             </div>
             <div class="bg-white rounded-lg p-4 text-center shadow-sm border border-slate-200">
-                <div class="text-lg font-bold text-slate-800 mb-1">9</div>
+                <div class="text-lg font-bold text-slate-800 mb-1">13</div>
                 <div class="text-xs text-slate-600 font-medium">👥 Persone</div>
             </div>
             <div class="bg-white rounded-lg p-4 text-center shadow-sm border border-slate-200">
@@ -416,7 +416,8 @@
                             <li>• Check-in online 24h prima</li>
                             <li>• Arrivo in aeroporto 3h prima per voli internazionali</li>
                             <li>• Bagaglio a mano: max 8kg</li>
-                            <li>• Bagaglio in stiva: max 23kg</li>
+                            <li>• Bagaglio in stiva: generalmente 20-30kg</li>
+                            <li>• ⚠️ È fondamentale controllare sempre le disposizioni della propria compagnia aerea e le informazioni specifiche della propria prenotazione</li>
                         </ul>
                     </div>
                 </div>
@@ -549,7 +550,7 @@
                         </ul>
                     </div>
                     
-                    <p class="text-sm text-gray-600 italic">Il coordinatore terrà traccia di tutte le spese fatte con la cassa comune e ogni tanto vi aggiornerà con un bel riepilogo. Così saprete sempre quanto manca prima di arrivare alla fine del viaggio con il sorriso! 😄</p>
+                    <p class="text-sm text-gray-600 italic">Il coordinatore terrà traccia di tutte le spese fatte con la cassa comune e ogni tanto vi aggiornerà con un bel riepilogo. Così saprete sempre quanto avete speso e quanto rimane! 😄</p>
                 </div>
             </section>
 
@@ -614,6 +615,59 @@
             <!-- Chi Siamo -->
             <section id="chisiamo" class="bg-white rounded-xl p-8 shadow-sm border border-slate-200 section-hidden">
                 <h2 class="text-xl font-semibold mb-6 text-slate-800 uppercase tracking-wider">🙋‍♀️ Chi Siamo</h2>
+                
+                <div class="bg-blue-50 rounded-xl p-6 mb-6 border border-blue-100">
+                    <h3 class="font-semibold text-slate-800 mb-3">👥 Il Nostro Gruppo</h3>
+                    <p class="text-slate-600 mb-4">Siamo 13 avventurieri pronti a scoprire insieme le meraviglie dello Sri Lanka! Aggiungi le tue informazioni nel box qui sotto per farti conoscere dal gruppo. 🌟</p>
+                </div>
+
+                <div id="profilesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <!-- I profili verranno aggiunti qui dinamicamente -->
+                </div>
+
+                <div class="bg-emerald-50 rounded-xl p-6 border border-emerald-100">
+                    <h4 class="font-semibold text-slate-800 mb-4">➕ Aggiungi il tuo profilo</h4>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Nome</label>
+                                <input type="text" id="profileName" placeholder="Il tuo nome" 
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Età</label>
+                                <input type="number" id="profileAge" placeholder="La tua età" 
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Città</label>
+                                <input type="text" id="profileCity" placeholder="La tua città" 
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Emoji preferita</label>
+                                <input type="text" id="profileEmoji" placeholder="🌟" maxlength="2"
+                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Cosa ti aspetti da questo viaggio?</label>
+                            <textarea id="profileExpectation" placeholder="Racconta cosa ti aspetti da questa avventura..." rows="3"
+                                      class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Fun fact su di te</label>
+                            <input type="text" id="profileFunFact" placeholder="Condividi qualcosa di divertente su di te!" 
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <button onclick="addProfile()" 
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200">
+                            ✨ Aggiungi il mio profilo
+                        </button>
+                    </div>
+                </div>
             </section>
 
             <!-- Foto -->
@@ -854,10 +908,107 @@
             }
         });
 
+        // Profile Management Functions
+        function loadProfiles() {
+            const profiles = JSON.parse(localStorage.getItem('sriLankaProfiles') || '[]');
+            const container = document.getElementById('profilesContainer');
+            container.innerHTML = '';
+            
+            profiles.forEach((profile, index) => {
+                const profileCard = document.createElement('div');
+                profileCard.className = 'bg-white rounded-xl p-4 border border-slate-200 shadow-sm';
+                profileCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">${profile.emoji || '🙋‍♀️'}</span>
+                            <div>
+                                <h4 class="font-semibold text-slate-800">${profile.name}</h4>
+                                <p class="text-sm text-slate-600">${profile.age} anni • ${profile.city}</p>
+                            </div>
+                        </div>
+                        <button onclick="removeProfile(${index})" 
+                                class="text-slate-400 hover:text-red-500 transition-colors text-sm">
+                            ✕
+                        </button>
+                    </div>
+                    <div class="space-y-2">
+                        <div>
+                            <p class="text-sm font-medium text-slate-700">Aspettative:</p>
+                            <p class="text-sm text-slate-600">${profile.expectation}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-700">Fun fact:</p>
+                            <p class="text-sm text-slate-600">${profile.funFact}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(profileCard);
+            });
+        }
+
+        function addProfile() {
+            const name = document.getElementById('profileName').value.trim();
+            const age = document.getElementById('profileAge').value.trim();
+            const city = document.getElementById('profileCity').value.trim();
+            const emoji = document.getElementById('profileEmoji').value.trim();
+            const expectation = document.getElementById('profileExpectation').value.trim();
+            const funFact = document.getElementById('profileFunFact').value.trim();
+
+            if (!name || !age || !city || !expectation || !funFact) {
+                alert('Per favore compila tutti i campi obbligatori!');
+                return;
+            }
+
+            const profiles = JSON.parse(localStorage.getItem('sriLankaProfiles') || '[]');
+            
+            const newProfile = {
+                name,
+                age,
+                city,
+                emoji: emoji || '🙋‍♀️',
+                expectation,
+                funFact
+            };
+
+            profiles.push(newProfile);
+            localStorage.setItem('sriLankaProfiles', JSON.stringify(profiles));
+
+            // Clear form
+            document.getElementById('profileName').value = '';
+            document.getElementById('profileAge').value = '';
+            document.getElementById('profileCity').value = '';
+            document.getElementById('profileEmoji').value = '';
+            document.getElementById('profileExpectation').value = '';
+            document.getElementById('profileFunFact').value = '';
+
+            loadProfiles();
+            
+            // Show success message
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '✅ Profilo aggiunto!';
+            button.className = 'w-full bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.className = 'w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200';
+            }, 2000);
+        }
+
+        function removeProfile(index) {
+            if (confirm('Sei sicuro di voler rimuovere questo profilo?')) {
+                const profiles = JSON.parse(localStorage.getItem('sriLankaProfiles') || '[]');
+                profiles.splice(index, 1);
+                localStorage.setItem('sriLankaProfiles', JSON.stringify(profiles));
+                loadProfiles();
+            }
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             // Keep all sections hidden since we're using modals now
+            loadProfiles();
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'969edf06d2371575',t:'MTc1NDMxOTA2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96b5157a63a5e192',t:'MTc1NDU1MTk4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
