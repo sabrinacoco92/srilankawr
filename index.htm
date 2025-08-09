@@ -1691,9 +1691,14 @@
 
                         <!-- Random Room Generator -->
                         <div class="bg-white rounded-xl p-4 border border-teal-200">
-                            <button onclick="generateRandomRooms()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-lg">
-                                🎲 SORTEGGIA CAMERE!
-                            </button>
+                            <div class="space-y-3">
+                                <button onclick="generateRandomRooms()" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-lg">
+                                    🎲 SORTEGGIA CAMERE!
+                                </button>
+                                <button onclick="resetRooms()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                                    🔄 Reset Camere
+                                </button>
+                            </div>
                             <p class="text-center text-xs text-slate-500 mt-2">Clicca per generare una nuova combinazione casuale</p>
                             
                             <div id="randomRoomsDisplay" class="mt-6 hidden">
@@ -1711,7 +1716,7 @@
                         <div class="bg-white rounded-xl p-6 border border-green-200">
                             <div class="flex items-center justify-between mb-4">
                                 <h4 class="font-medium text-slate-800">🧠 Quiz Interattivo</h4>
-                                <button onclick="resetTrivia()" class="text-sm bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded-lg transition-colors">
+                                <button onclick="confirmResetTrivia()" class="text-sm bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded-lg transition-colors">
                                     🔄 Reset
                                 </button>
                             </div>
@@ -3654,6 +3659,12 @@
             gameStarted = false;
         }
 
+        function confirmResetTrivia() {
+            if (confirm('Sei sicuro di voler cancellare tutti i punteggi del quiz? Questa azione non può essere annullata.')) {
+                resetTrivia();
+            }
+        }
+
         function resetTrivia() {
             // Reset all scores
             const players = ['alessiab', 'alessiaa', 'giacomo', 'martina', 'noemi', 'salvatore', 'nicolo', 'marco', 'marlen', 'matteo', 'dario', 'francesco', 'giulio', 'sabrina'];
@@ -3675,6 +3686,16 @@
             document.getElementById('startBtn').textContent = '🎯 Inizia Quiz';
             document.getElementById('currentPlayer').value = '';
             document.getElementById('questionNumber').textContent = '1';
+        }
+
+        function resetRooms() {
+            const display = document.getElementById('randomRoomsDisplay');
+            display.classList.add('hidden');
+            display.innerHTML = '';
+            
+            // Reset checkboxes
+            document.getElementById('allowMixed').checked = false;
+            document.getElementById('allowTriple').checked = false;
         }
 
         // Awards Voting System
@@ -4720,10 +4741,19 @@ ${firstName} ${lastName}`);
             const button = document.querySelector('button[onclick="generatePDF()"]');
             const originalHTML = button.innerHTML;
             
+            // Helper function to clean text from emojis and invalid characters
+            function cleanText(text) {
+                // Remove emojis and special Unicode characters that might cause PDF issues
+                return text
+                    .replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '')
+                    .replace(/[^\x00-\x7F]/g, '') // Remove non-ASCII characters
+                    .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+                    .trim();
+            }
+            
             // Show loading state
             button.innerHTML = `
                 <span class="flex items-center justify-center space-x-3">
-                    <span class="text-2xl">⏳</span>
                     <span>Generando PDF...</span>
                     <span class="text-sm opacity-75">(Un attimo!)</span>
                 </span>
@@ -4759,8 +4789,9 @@ ${firstName} ${lastName}`);
                     
                     // Helper function to add text with word wrap
                     function addWrappedText(text, x, y, maxWidth, fontSize = 10) {
+                        const cleanedText = cleanText(text);
                         doc.setFontSize(fontSize);
-                        const lines = doc.splitTextToSize(text, maxWidth);
+                        const lines = doc.splitTextToSize(cleanedText, maxWidth);
                         lines.forEach((line, index) => {
                             if (y + (index * lineHeight) > pageHeight - margin) {
                                 doc.addPage();
@@ -4775,7 +4806,7 @@ ${firstName} ${lastName}`);
                     doc.setTextColor(...primaryColor);
                     doc.setFontSize(28);
                     doc.setFont('helvetica', 'bold');
-                    doc.text('SRI LANKA 360°', 105, 40, { align: 'center' });
+                    doc.text('SRI LANKA 360', 105, 40, { align: 'center' });
                     
                     doc.setFontSize(16);
                     doc.setFont('helvetica', 'normal');
@@ -4796,17 +4827,17 @@ ${firstName} ${lastName}`);
                     
                     // Trip Overview
                     doc.setFont('helvetica', 'bold');
-                    doc.text('🌍 PANORAMICA DEL VIAGGIO', margin, yPosition);
+                    doc.text('PANORAMICA DEL VIAGGIO', margin, yPosition);
                     yPosition += 15;
                     
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(10);
-                    const overview = `Un'avventura di 12 giorni alla scoperta della "Lacrima dell'Oceano Indiano". Dalle antiche città storiche alle spiagge paradisiache, dalle piantagioni di tè alle riserve naturali.
+                    const overview = `Un'avventura di 12 giorni alla scoperta della "Lacrima dell'Oceano Indiano". Dalle antiche citta storiche alle spiagge paradisiache, dalle piantagioni di te alle riserve naturali.
 
-• 12 giorni di avventura
-• 13 persone nel gruppo
-• 6 siti UNESCO da visitare
-• Safari, trekking, cultura e relax`;
+- 12 giorni di avventura
+- 13 persone nel gruppo
+- 6 siti UNESCO da visitare
+- Safari, trekking, cultura e relax`;
                     
                     yPosition = addWrappedText(overview, margin, yPosition, 170);
                     yPosition += 10;
@@ -4815,29 +4846,29 @@ ${firstName} ${lastName}`);
                     checkPageBreak(40);
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(12);
-                    doc.text('🗺️ ITINERARIO DETTAGLIATO', margin, yPosition);
+                    doc.text('ITINERARIO DETTAGLIATO', margin, yPosition);
                     yPosition += 15;
                     
                     const itinerary = [
-                        'Giorno 1 - ✈️ Arrivo a Negombo',
-                        'Giorno 2 - 🏰 Galle (Fortezza UNESCO)',
-                        'Giorno 3 - 🐘 Udawalawe National Park (Safari)',
-                        'Giorno 4 - 🚂 Ella (Treno panoramico)',
-                        'Giorno 5 - 🍃 Nuwara Eliya (Piantagioni di tè)',
-                        'Giorno 6 - 👑 Kandy (Tempio del Dente)',
-                        'Giorno 7 - 🏛️ Dambulla (Grotte dorate)',
-                        'Giorno 8 - 🦁 Sigiriya e Polonnaruwa',
-                        'Giorno 9 - 🏖️ Trincomalee/Pasikudah',
-                        'Giorno 10 - 🏖️ Trincomalee/Pasikudah',
-                        'Giorno 11 - 🏛️ Anuradhapura',
-                        'Giorno 12 - ✈️ Partenza'
+                        'Giorno 1 - Arrivo a Negombo',
+                        'Giorno 2 - Galle (Fortezza UNESCO)',
+                        'Giorno 3 - Udawalawe National Park (Safari)',
+                        'Giorno 4 - Ella (Treno panoramico)',
+                        'Giorno 5 - Nuwara Eliya (Piantagioni di te)',
+                        'Giorno 6 - Kandy (Tempio del Dente)',
+                        'Giorno 7 - Dambulla (Grotte dorate)',
+                        'Giorno 8 - Sigiriya e Polonnaruwa',
+                        'Giorno 9 - Trincomalee/Pasikudah',
+                        'Giorno 10 - Trincomalee/Pasikudah',
+                        'Giorno 11 - Anuradhapura',
+                        'Giorno 12 - Partenza'
                     ];
                     
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(10);
                     itinerary.forEach(day => {
                         checkPageBreak();
-                        doc.text(day, margin, yPosition);
+                        doc.text(cleanText(day), margin, yPosition);
                         yPosition += lineHeight;
                     });
                     yPosition += 10;
@@ -4846,33 +4877,33 @@ ${firstName} ${lastName}`);
                     checkPageBreak(40);
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(12);
-                    doc.text('🎒 PACKING LIST ESSENZIALE', margin, yPosition);
+                    doc.text('PACKING LIST ESSENZIALE', margin, yPosition);
                     yPosition += 15;
                     
                     const packingItems = [
                         'ABBIGLIAMENTO:',
-                        '• Magliette leggere (5-7)',
-                        '• Pantaloni leggeri (2-3)',
-                        '• Giacca leggera per serate fresche',
-                        '• Impermeabile o poncho',
-                        '• Costumi da bagno + teli',
-                        '• Sarong per templi',
+                        '- Magliette leggere (5-7)',
+                        '- Pantaloni leggeri (2-3)',
+                        '- Giacca leggera per serate fresche',
+                        '- Impermeabile o poncho',
+                        '- Costumi da bagno + teli',
+                        '- Sarong per templi',
                         '',
                         'SCARPE:',
-                        '• Scarpe da trekking comode',
-                        '• Sandali/infradito',
-                        '• Calzini (utili nei templi)',
+                        '- Scarpe da trekking comode',
+                        '- Sandali/infradito',
+                        '- Calzini (utili nei templi)',
                         '',
                         'PROTEZIONE:',
-                        '• Crema solare SPF 30+',
-                        '• Cappello/cappellino',
-                        '• Repellente per insetti',
+                        '- Crema solare SPF 30+',
+                        '- Cappello/cappellino',
+                        '- Repellente per insetti',
                         '',
                         'VARIE:',
-                        '• Medicine di base',
-                        '• Caricabatterie + power bank',
-                        '• Adattatore universale',
-                        '• Torcia per escursioni'
+                        '- Medicine di base',
+                        '- Caricabatterie + power bank',
+                        '- Adattatore universale',
+                        '- Torcia per escursioni'
                     ];
                     
                     doc.setFont('helvetica', 'normal');
@@ -4884,7 +4915,7 @@ ${firstName} ${lastName}`);
                         } else {
                             doc.setFont('helvetica', 'normal');
                         }
-                        doc.text(item, margin, yPosition);
+                        doc.text(cleanText(item), margin, yPosition);
                         yPosition += lineHeight;
                     });
                     yPosition += 10;
@@ -4893,28 +4924,28 @@ ${firstName} ${lastName}`);
                     checkPageBreak(40);
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(12);
-                    doc.text('✅ CHECKLIST PRE-PARTENZA', margin, yPosition);
+                    doc.text('CHECKLIST PRE-PARTENZA', margin, yPosition);
                     yPosition += 15;
                     
                     const checklist = [
                         'DOCUMENTI (URGENTE):',
-                        '□ Richiedere ETA (Electronic Travel Authorization)',
-                        '□ Compilare Arrival Card online',
-                        '□ Verificare validità passaporto (min. 6 mesi)',
+                        '[ ] Richiedere ETA (Electronic Travel Authorization)',
+                        '[ ] Compilare Arrival Card online',
+                        '[ ] Verificare validita passaporto (min. 6 mesi)',
                         '',
                         'BANCA E DENARO:',
-                        '□ Avvisare la banca del viaggio',
-                        '□ Verificare limiti prelievo estero',
-                        '□ Prelevare contanti per cambio locale',
+                        '[ ] Avvisare la banca del viaggio',
+                        '[ ] Verificare limiti prelievo estero',
+                        '[ ] Prelevare contanti per cambio locale',
                         '',
                         'SALUTE:',
-                        '□ Copia assicurazione WeRoad',
-                        '□ Kit farmaci personali',
+                        '[ ] Copia assicurazione WeRoad',
+                        '[ ] Kit farmaci personali',
                         '',
                         'TECNOLOGIA:',
-                        '□ Scaricare app offline (Maps.me, Google Translate)',
-                        '□ Piano dati roaming o SIM locale',
-                        '□ Backup foto e documenti su cloud'
+                        '[ ] Scaricare app offline (Maps.me, Google Translate)',
+                        '[ ] Piano dati roaming o SIM locale',
+                        '[ ] Backup foto e documenti su cloud'
                     ];
                     
                     doc.setFont('helvetica', 'normal');
@@ -4926,7 +4957,7 @@ ${firstName} ${lastName}`);
                         } else {
                             doc.setFont('helvetica', 'normal');
                         }
-                        doc.text(item, margin, yPosition);
+                        doc.text(cleanText(item), margin, yPosition);
                         yPosition += lineHeight;
                     });
                     yPosition += 10;
@@ -4935,26 +4966,26 @@ ${firstName} ${lastName}`);
                     checkPageBreak(40);
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(12);
-                    doc.text('📞 CONTATTI IMPORTANTI', margin, yPosition);
+                    doc.text('CONTATTI IMPORTANTI', margin, yPosition);
                     yPosition += 15;
                     
                     const contacts = [
                         'COORDINATRICE - SABRINA:',
-                        '📱 +39 3477257071',
-                        '📧 cocosabrina.wr@gmail.com',
-                        '📧 sabrina_coco@hotmail.it',
-                        '📸 @awild.coco (Instagram)',
+                        'Tel: +39 3477257071',
+                        'Email: cocosabrina.wr@gmail.com',
+                        'Email: sabrina_coco@hotmail.it',
+                        'Instagram: @awild.coco',
                         '',
                         'EMERGENZE SRI LANKA:',
-                        '🚨 Polizia: 119',
-                        '🚑 Ambulanza: 110',
-                        '🚒 Vigili del Fuoco: 111',
-                        '🏥 Emergenze Turistiche: 1912',
+                        'Polizia: 119',
+                        'Ambulanza: 110',
+                        'Vigili del Fuoco: 111',
+                        'Emergenze Turistiche: 1912',
                         '',
                         'AMBASCIATA ITALIANA:',
-                        '📍 55, Jawatte Road, Colombo 5',
-                        '📞 +94 11 2588388',
-                        '📧 ambasciata.colombo@esteri.it'
+                        'Indirizzo: 55, Jawatte Road, Colombo 5',
+                        'Tel: +94 11 2588388',
+                        'Email: ambasciata.colombo@esteri.it'
                     ];
                     
                     doc.setFont('helvetica', 'normal');
@@ -4966,7 +4997,7 @@ ${firstName} ${lastName}`);
                         } else {
                             doc.setFont('helvetica', 'normal');
                         }
-                        doc.text(item, margin, yPosition);
+                        doc.text(cleanText(item), margin, yPosition);
                         yPosition += lineHeight;
                     });
                     yPosition += 10;
@@ -4977,7 +5008,7 @@ ${firstName} ${lastName}`);
                         checkPageBreak(40);
                         doc.setFont('helvetica', 'bold');
                         doc.setFontSize(12);
-                        doc.text('📖 DIARIO DI BORDO DEL GRUPPO', margin, yPosition);
+                        doc.text('DIARIO DI BORDO DEL GRUPPO', margin, yPosition);
                         yPosition += 15;
                         
                         doc.setFont('helvetica', 'normal');
@@ -5002,14 +5033,14 @@ ${firstName} ${lastName}`);
                             // Entry header
                             doc.setFont('helvetica', 'bold');
                             doc.setFontSize(9);
-                            doc.text(`${index + 1}. ${entry.author}`, margin, yPosition);
+                            doc.text(`${index + 1}. ${cleanText(entry.author)}`, margin, yPosition);
                             
                             doc.setFont('helvetica', 'normal');
                             doc.setFontSize(8);
                             doc.setTextColor(...secondaryColor);
                             let headerText = `${formattedDate}`;
                             if (entry.location) {
-                                headerText += ` - ${entry.location}`;
+                                headerText += ` - ${cleanText(entry.location)}`;
                             }
                             doc.text(headerText, margin + 50, yPosition);
                             yPosition += 8;
@@ -5034,27 +5065,27 @@ ${firstName} ${lastName}`);
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(12);
                     doc.setTextColor(...primaryColor);
-                    doc.text('🏛️ CONSIGLI CULTURALI', margin, yPosition);
+                    doc.text('CONSIGLI CULTURALI', margin, yPosition);
                     yPosition += 15;
                     
                     const culturalTips = `TEMPLI E SITI RELIGIOSI:
-• Vestiti coprendo spalle e gambe
-• Togliere scarpe e cappelli
-• Non voltare le spalle alle statue di Buddha
-• Portare calzini per camminare
-• Rispettare il silenzio durante le preghiere
+- Vestiti coprendo spalle e gambe
+- Togliere scarpe e cappelli
+- Non voltare le spalle alle statue di Buddha
+- Portare calzini per camminare
+- Rispettare il silenzio durante le preghiere
 
 SITI ARCHEOLOGICI:
-• Iniziare presto per evitare il caldo
-• Portare acqua e cappello
-• Scarpe comode per camminare
-• Crema solare (il sole è forte)
+- Iniziare presto per evitare il caldo
+- Portare acqua e cappello
+- Scarpe comode per camminare
+- Crema solare (il sole e forte)
 
 VALUTA E PAGAMENTI:
-• Valuta locale: Rupia dello Sri Lanka (LKR)
-• Cambio approssimativo: 1 EUR = 330-350 LKR
-• Contanti preferiti nei mercati locali
-• Carte accettate in hotel e ristoranti principali`;
+- Valuta locale: Rupia dello Sri Lanka (LKR)
+- Cambio approssimativo: 1 EUR = 330-350 LKR
+- Contanti preferiti nei mercati locali
+- Carte accettate in hotel e ristoranti principali`;
                     
                     doc.setFont('helvetica', 'normal');
                     doc.setFontSize(9);
@@ -5070,7 +5101,7 @@ VALUTA E PAGAMENTI:
                     doc.setFont('helvetica', 'italic');
                     doc.setFontSize(8);
                     doc.setTextColor(...secondaryColor);
-                    doc.text('Generato automaticamente dal sistema Sri Lanka 360° - WeRoad Summer Edition', 105, yPosition, { align: 'center' });
+                    doc.text('Generato automaticamente dal sistema Sri Lanka 360 - WeRoad Summer Edition', 105, yPosition, { align: 'center' });
                     yPosition += 5;
                     doc.text(`Data generazione: ${new Date().toLocaleDateString('it-IT')}`, 105, yPosition, { align: 'center' });
                     
@@ -5080,7 +5111,6 @@ VALUTA E PAGAMENTI:
                     // Success state
                     button.innerHTML = `
                         <span class="flex items-center justify-center space-x-3">
-                            <span class="text-2xl">✅</span>
                             <span>PDF Scaricato!</span>
                             <span class="text-sm opacity-75">(Controllate i download!)</span>
                         </span>
@@ -5099,7 +5129,6 @@ VALUTA E PAGAMENTI:
                     // Error state
                     button.innerHTML = `
                         <span class="flex items-center justify-center space-x-3">
-                            <span class="text-2xl">❌</span>
                             <span>Errore PDF</span>
                             <span class="text-sm opacity-75">(Riprova!)</span>
                         </span>
@@ -5115,5 +5144,5 @@ VALUTA E PAGAMENTI:
             }, 100);
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96ca3cf186113748',t:'MTc1NDc3MzgwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96ca461171643748',t:'MTc1NDc3NDE3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
