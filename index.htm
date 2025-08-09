@@ -4250,9 +4250,10 @@ ${firstName} ${lastName}`);
                             </div>
                             <div class="text-xs text-slate-500">${formattedDate}</div>
                         </div>
-                        <button onclick="removeDiaryEntry(${index})" 
-                                class="text-slate-400 hover:text-red-500 transition-colors text-sm ml-2">
-                            ✕
+                        <button onclick="confirmDeleteDiaryEntry(${index})" 
+                                class="text-slate-400 hover:text-red-500 transition-colors text-sm ml-2 p-1 rounded hover:bg-red-50"
+                                title="Elimina questo post">
+                            🗑️
                         </button>
                     </div>
                     <div class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">${entry.message}</div>
@@ -4307,13 +4308,95 @@ ${firstName} ${lastName}`);
             }, 2000);
         }
 
-        function removeDiaryEntry(index) {
-            if (confirm('Sei sicuro di voler rimuovere questa entry dal diario?')) {
-                const entries = JSON.parse(localStorage.getItem('sriLankaDiary') || '[]');
-                entries.splice(index, 1);
-                localStorage.setItem('sriLankaDiary', JSON.stringify(entries));
-                loadDiaryEntries();
+        function confirmDeleteDiaryEntry(index) {
+            const entries = JSON.parse(localStorage.getItem('sriLankaDiary') || '[]');
+            const entry = entries[index];
+            
+            // Create custom confirmation modal
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl p-6 max-w-md mx-4 shadow-2xl">
+                    <div class="text-center mb-6">
+                        <div class="text-4xl mb-3">🗑️</div>
+                        <h3 class="text-lg font-semibold text-slate-800 mb-2">Elimina Post dal Diario</h3>
+                        <p class="text-sm text-slate-600 mb-4">Sei sicuro di voler eliminare questo ricordo?</p>
+                        
+                        <div class="bg-slate-50 rounded-lg p-3 text-left mb-4">
+                            <div class="text-xs text-slate-500 mb-1">
+                                <strong>✍️ ${entry.author}</strong>
+                                ${entry.location ? ` • 📍 ${entry.location}` : ''}
+                            </div>
+                            <div class="text-sm text-slate-700 line-clamp-3">
+                                "${entry.message.length > 100 ? entry.message.substring(0, 100) + '...' : entry.message}"
+                            </div>
+                        </div>
+                        
+                        <p class="text-xs text-red-600 font-medium">⚠️ Questa azione non può essere annullata!</p>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="cancelDeleteDiary()" 
+                                class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 px-4 rounded-lg transition-colors">
+                            ❌ Annulla
+                        </button>
+                        <button onclick="deleteDiaryEntry(${index})" 
+                                class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                            🗑️ Elimina
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cancelDeleteDiary() {
+            const modal = document.querySelector('.fixed.inset-0.bg-black');
+            if (modal) {
+                document.body.removeChild(modal);
+                document.body.style.overflow = 'auto';
             }
+        }
+
+        function deleteDiaryEntry(index) {
+            const entries = JSON.parse(localStorage.getItem('sriLankaDiary') || '[]');
+            entries.splice(index, 1);
+            localStorage.setItem('sriLankaDiary', JSON.stringify(entries));
+            
+            // Close modal
+            cancelDeleteDiary();
+            
+            // Reload entries
+            loadDiaryEntries();
+            
+            // Show success message
+            showDeleteSuccessMessage();
+        }
+
+        function showDeleteSuccessMessage() {
+            // Create temporary success message
+            const successDiv = document.createElement('div');
+            successDiv.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 transform transition-all duration-300';
+            successDiv.innerHTML = '✅ Post eliminato dal diario!';
+            
+            document.body.appendChild(successDiv);
+            
+            // Animate in
+            setTimeout(() => {
+                successDiv.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                successDiv.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (document.body.contains(successDiv)) {
+                        document.body.removeChild(successDiv);
+                    }
+                }, 300);
+            }, 3000);
         }
 
         function exportDiary() {
@@ -4799,5 +4882,5 @@ VALUTA E PAGAMENTI:
             }, 100);
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96ca4edf20283748',t:'MTc1NDc3NDUzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96ca5394b4733748',t:'MTc1NDc3NDczMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
