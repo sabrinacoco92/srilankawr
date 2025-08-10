@@ -234,7 +234,7 @@
                 </button>
                 <button onclick="openModal('alimentari')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
                     <div class="text-2xl mb-2">🍽️</div>
-                    <div class="text-sm font-medium text-slate-700">Alimentari</div>
+                    <div class="text-sm font-medium text-slate-700">Preferenze Cibo</div>
                 </button>
                 <button onclick="openModal('app')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
                     <div class="text-2xl mb-2">📱</div>
@@ -2168,52 +2168,24 @@
 
             </section>
 
-            <!-- Preferenze Alimentari -->
+            <!-- Preferenze Cibo -->
             <section id="alimentari" class="bg-white rounded-xl p-8 shadow-sm border border-slate-200 section-hidden">
-                <h2 class="text-xl font-semibold mb-6 text-slate-800 uppercase tracking-wider">🍽️ Preferenze Alimentari</h2>
+                <h2 class="text-xl font-semibold mb-6 text-slate-800 uppercase tracking-wider">🍽️ Preferenze Cibo</h2>
                 
                 <div class="bg-amber-50 rounded-xl p-6 mb-6 border border-amber-100">
                     <h3 class="font-semibold text-slate-800 mb-3">📝 Comunica le tue esigenze alimentari</h3>
                     
-                    <form id="foodPreferencesForm" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Nome *</label>
-                                <input type="text" id="firstName" required
-                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">Cognome *</label>
-                                <input type="text" id="lastName" required
-                                       class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Tipo di richiesta/intolleranza *</label>
-                            <select id="requestType" required
-                                    class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <option value="">Seleziona...</option>
-                                <option value="allergia">Allergia alimentare</option>
-                                <option value="intolleranza">Intolleranza</option>
-                                <option value="vegetariano">Vegetariano</option>
-                                <option value="vegano">Vegano</option>
-                                <option value="religioso">Restrizioni religiose</option>
-                                <option value="altro">Altro</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Dettagli specifici *</label>
-                            <textarea id="details" required rows="4" placeholder="Descrivi nel dettaglio le tue esigenze alimentari, cosa evitare, cosa preferisci, ecc..."
-                                      class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
-                        </div>
-                        
-                        <button type="submit" 
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200">
-                            📧 Invia a Sabrina
-                        </button>
-                    </form>
+                    <div class="bg-white rounded-xl p-4 border border-amber-200">
+                        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScgiBdKXEHsksA3bmvRaT4oHxT829XlyjG6SO9Q5hrLTr4Ogg/viewform?embedded=true" 
+                                width="100%" 
+                                height="686" 
+                                frameborder="0" 
+                                marginheight="0" 
+                                marginwidth="0"
+                                class="rounded-lg">
+                            Caricamento…
+                        </iframe>
+                    </div>
                 </div>
 
                 <!-- Diario Section -->
@@ -4228,55 +4200,7 @@ ${voterName}`;
             // Keep all sections hidden since we're using modals now
             loadDiaryEntries();
             
-            // Handle food preferences form submission
-            const foodForm = document.getElementById('foodPreferencesForm');
-            if (foodForm) {
-                foodForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const firstName = document.getElementById('firstName').value;
-                    const lastName = document.getElementById('lastName').value;
-                    const requestType = document.getElementById('requestType').value;
-                    const details = document.getElementById('details').value;
-                    
-                    // Create email content
-                    const subject = encodeURIComponent('Preferenze Alimentari - Sri Lanka 360°');
-                    const body = encodeURIComponent(`Ciao Sabrina,
 
-ti scrivo per comunicarti le mie preferenze alimentari per il viaggio in Sri Lanka.
-
-DATI PERSONALI:
-Nome: ${firstName}
-Cognome: ${lastName}
-
-TIPO DI RICHIESTA:
-${requestType.charAt(0).toUpperCase() + requestType.slice(1)}
-
-DETTAGLI:
-${details}
-
-Grazie per l'attenzione!
-
-${firstName} ${lastName}`);
-                    
-                    // Open email client
-                    window.location.href = `mailto:cocosabrina.wr@gmail.com?subject=${subject}&body=${body}`;
-                    
-                    // Show success message
-                    const submitBtn = e.target.querySelector('button[type="submit"]');
-                    const originalText = submitBtn.innerHTML;
-                    submitBtn.innerHTML = '✅ Email aperta!';
-                    submitBtn.className = 'w-full bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200';
-                    
-                    setTimeout(() => {
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.className = 'w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200';
-                        
-                        // Clear form
-                        foodForm.reset();
-                    }, 3000);
-                });
-            }
         });
 
         // Diary Management Functions
@@ -5180,5 +5104,5 @@ VALUTA E PAGAMENTI:
             }, 100);
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96ca67dd04b1d815',t:'MTc1NDc3NTU2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96d06162d6571498',t:'MTc1NDgzODIxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
