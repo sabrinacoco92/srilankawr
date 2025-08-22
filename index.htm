@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Lanka 360° - Summer Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'slate-50': '#f8fafc',
+                        'slate-100': '#f1f5f9',
+                        'slate-200': '#e2e8f0',
+                        'slate-300': '#cbd5e1',
+                        'slate-600': '#475569',
+                        'slate-700': '#334155',
+                        'slate-800': '#1e293b',
+                        'slate-900': '#0f172a',
+                        'blue-50': '#eff6ff',
+                        'blue-100': '#dbeafe',
+                        'blue-500': '#3b82f6',
+                        'blue-600': '#2563eb',
+                        'emerald-50': '#ecfdf5',
+                        'emerald-100': '#d1fae5',
+                        'emerald-500': '#10b981',
+                        'amber-50': '#fffbeb',
+                        'amber-100': '#fef3c7',
+                        'violet-50': '#f5f3ff',
+                        'violet-100': '#ede9fe',
+                        'teal-50': '#f0fdfa',
+                        'teal-100': '#ccfbf1'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'display': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .countdown-item {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 1px solid #cbd5e1;
+        }
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        .nav-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .section-hidden {
+            display: none;
+        }
+        .itinerary-day {
+            transition: all 0.3s ease;
+        }
+        .itinerary-day:hover {
+            transform: scale(1.02);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .close {
+            color: #9ca3af;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close:hover {
+            color: #374151;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans">
+    <!-- Header -->
+    <header class="relative h-64 md:h-80 overflow-hidden">
+        <img src="https://strapi-imaginary.weroad.it/resource/webp-large/1131/viaggio-di-gruppo-in-sri-lanka.webp" 
+             alt="Sri Lanka" 
+             class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/40 to-slate-900/20 flex items-center justify-center">
+            <div class="text-center text-white">
+                <h1 class="text-3xl md:text-5xl font-bold mb-2 font-display tracking-tight">Sri Lanka 360°</h1>
+                <p class="text-base md:text-lg opacity-95 mb-4 uppercase tracking-widest font-medium">Summer Edition</p>
+                <p class="text-sm md:text-base opacity-85 tracking-wide font-light">18 AGOSTO - 29 AGOSTO 2025</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Countdown -->
+    <section class="py-4 px-4 bg-white border-b border-slate-200">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-lg font-medium mb-4 text-slate-800 uppercase tracking-wider">Countdown alla Partenza</h2>
+            <div id="countdown" class="flex justify-center space-x-2 md:space-x-4">
+                <div class="countdown-item rounded-lg p-3 text-center min-w-16 shadow-sm">
+                    <div id="days" class="text-xl md:text-2xl font-bold text-slate-800">0</div>
+                    <div class="text-xs md:text-sm text-slate-600 font-medium">Giorni</div>
+                </div>
+                <div class="countdown-item rounded-lg p-3 text-center min-w-16 shadow-sm">
+                    <div id="hours" class="text-xl md:text-2xl font-bold text-slate-800">0</div>
+                    <div class="text-xs md:text-sm text-slate-600 font-medium">Ore</div>
+                </div>
+                <div class="countdown-item rounded-lg p-3 text-center min-w-16 shadow-sm">
+                    <div id="minutes" class="text-xl md:text-2xl font-bold text-slate-800">0</div>
+                    <div class="text-xs md:text-sm text-slate-600 font-medium">Min</div>
+                </div>
+                <div class="countdown-item rounded-lg p-3 text-center min-w-16 shadow-sm">
+                    <div id="seconds" class="text-xl md:text-2xl font-bold text-slate-800">0</div>
+                    <div class="text-xs md:text-sm text-slate-600 font-medium">Sec</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Cards -->
+    <section class="py-4 px-4 bg-slate-100">
+        <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="bg-white rounded-lg p-4 text-center shadow-sm border border-slate-200">
+                <div class="text-lg font-bold text-slate-800 mb-1">12</div>
+                <div class="text-xs text-slate-600 font-medium">📅 Giorni</div>
+            </div>
+            <div class="bg-white rounded-lg p-4 text-center shadow-sm border border-slate-200">
+                <div class="text-lg font-bold text-slate-800 mb-1">13</div>
+                <div class="text-xs text-slate-600 font-medium">👥 Persone</div>
+            </div>
+            <div class="bg-white rounded-lg p-4 text-center shadow-sm border border-slate-200">
+                <div class="text-lg font-bold text-slate-800 mb-1">∞</div>
+                <div class="text-xs text-slate-600 font-medium">🎯 Attività</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <nav class="py-8 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button onclick="openModal('dashboard')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">🏠</div>
+                    <div class="text-sm font-medium text-slate-700">Dashboard</div>
+                </button>
+                <button onclick="openModal('intro')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">📖</div>
+                    <div class="text-sm font-medium text-slate-700">Intro</div>
+                </button>
+                <button onclick="openModal('guida')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">🏛️</div>
+                    <div class="text-sm font-medium text-slate-700">Guida SL</div>
+                </button>
+                <button onclick="openModal('itinerario')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">🗺️</div>
+                    <div class="text-sm font-medium text-slate-700">Itinerario</div>
+                </button>
+                <button onclick="openModal('voli')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">✈️</div>
+                    <div class="text-sm font-medium text-slate-700">Voli</div>
+                </button>
+                <button onclick="openModal('packing')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">🎒</div>
+                    <div class="text-sm font-medium text-slate-700">Packing List</div>
+                </button>
+
+                <button onclick="openModal('checklist')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">✅</div>
+                    <div class="text-sm font-medium text-slate-700">Checklist</div>
+                </button>
+
+                <button onclick="openModal('fun')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">🎮</div>
+                    <div class="text-sm font-medium text-slate-700">Fun Zone</div>
+                </button>
+
+                <button onclick="openModal('cassa')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">💰</div>
+                    <div class="text-sm font-medium text-slate-700">Cassa Comune</div>
+                </button>
+                <button onclick="openModal('contatti')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">📞</div>
+                    <div class="text-sm font-medium text-slate-700">Info & Contatti</div>
+                </button>
+
+                <button onclick="openModal('chisiamo')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">🙋‍♀️</div>
+                    <div class="text-sm font-medium text-slate-700">Chi Siamo</div>
+                </button>
+                <button onclick="openModal('foto')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">📸</div>
+                    <div class="text-sm font-medium text-slate-700">Foto</div>
+                </button>
+                <button onclick="openModal('alimentari')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">🍽️</div>
+                    <div class="text-sm font-medium text-slate-700">Preferenze Cibo</div>
+                </button>
+                <button onclick="openModal('app')" class="nav-item bg-slate-50 hover:bg-blue-50 rounded-xl p-4 text-center shadow-sm border border-slate-200 hover:border-blue-200 transition-all duration-200">
+                    <div class="text-2xl mb-2">📱</div>
+                    <div class="text-sm font-medium text-slate-700">App Utili</div>
+                </button>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Modal -->
+    <div id="contentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="text-lg font-medium text-gray-800 uppercase tracking-wide"></h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Internet Solutions Modal -->
+    <div id="internetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="text-lg font-medium text-gray-800 uppercase tracking-wide">📶 Soluzioni Internet per lo Sri Lanka</h2>
+                <span class="close" onclick="closeInternetModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="space-y-6">
+
+                    <!-- eSIM e SIM Internazionali -->
+                    <div class="bg-violet-50 rounded-xl p-6 border border-violet-100">
+                        <h3 class="font-semibold text-slate-800 mb-4">📲 eSIM e SIM Internazionali</h3>
+                        
+                        <div class="bg-white rounded-lg p-4 border border-violet-200 mb-4">
+                            <p class="text-sm text-slate-600 mb-2">
+                                <strong>💡 Informazioni Generali:</strong> Sono disponibili diverse tariffe nonché sia l'opzione SIM fisica sia eSIM (controllare compatibilità telefono).
+                            </p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-white rounded-lg p-4 border border-slate-200">
+                                <h4 class="font-medium text-slate-800 mb-2">🌐 1. Airalo</h4>
+                                <ul class="text-sm text-slate-600 space-y-1 mb-3">
+                                    <li>• <strong>15 giorni:</strong> 1GB per €5,50</li>
+                                    <li>• <strong>30 giorni:</strong> 3GB per €6</li>
+                                    <li>• <strong>30 giorni:</strong> 5GB per €8</li>
+                                    <li>• <strong>30 giorni:</strong> 10GB per €10,50</li>
+                                    <li>• <strong>30 giorni:</strong> 20GB per €16</li>
+                                    <li>• <strong>Tipo:</strong> Solo eSIM</li>
+                                </ul>
+                                <a href="https://www.airalo.com/it/sri-lanka-esim?srsltid=AfmBOorM0hBVo5Yo3N3sD7_h75NEGMWAdTjZfNQ_SaGcc0ZhX6Wa0cSa" 
+                                   target="_blank" 
+                                   class="inline-block bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded-lg transition-colors">
+                                    🔗 Vai ad Airalo
+                                </a>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-4 border border-slate-200">
+                                <h4 class="font-medium text-slate-800 mb-2">🌐 2. Holafly</h4>
+                                <ul class="text-sm text-slate-600 space-y-1 mb-3">
+                                    <li>• <strong>Sri Lanka 12 giorni:</strong> Dati illimitati per €39,90</li>
+                                    <li>• <strong>Tipo:</strong> Solo eSIM</li>
+                                </ul>
+                                <a href="https://esim.holafly.com/it/esim-sri-lanka/?currency=EUR&cq_src=google_ads&cq_cmp=21384851656&cq_term=&cq_plac=&cq_net=g&cq_plt=gp&tw_source=google&tw_adid=702423708901&tw_campaign=21384851656&gad_source=1&gad_campaignid=21384851656&gclid=CjwKCAjw7_DEBhAeEiwAWKiCCw0-y0_OmgjRcos9j-RX_v9dxXuPux6Nm1SHEd6HRCAi6fgak363XRoCbAQQAvD_BwE" 
+                                   target="_blank" 
+                                   class="inline-block bg-orange-600 hover:bg-orange-700 text-white text-xs px-3 py-1 rounded-lg transition-colors">
+                                    🔗 Vai a Holafly
+                                </a>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-4 border border-slate-200">
+                                <h4 class="font-medium text-slate-800 mb-2">🌐 3. Mobitel</h4>
+                                <ul class="text-sm text-slate-600 space-y-1 mb-3">
+                                    <li>• <strong>Tourist Package:</strong> ~1550 LKR (4-5€) per 30GB/30 giorni</li>
+                                    <li>• <strong>Dove comprare:</strong> Online, aeroporto, negozi Mobitel</li>
+                                    <li>• <strong>Tipo:</strong> SIM fisica e eSIM disponibili</li>
+                                    <li>• <strong>Consiglio:</strong> Si può richiedere online o fare un passaggio dallo stand in aeroporto</li>
+                                </ul>
+                                <div class="bg-orange-50 rounded-lg p-3 border border-orange-200 mb-3">
+                                    <p class="text-sm text-orange-800">
+                                        <strong>📢 IMPORTANTE:</strong> Chi decide di procedere con Mobitel me lo faccia sapere entro domani così riferisco i nomi allo stand per facilitare poi l'attivazione e il funzionamento della SIM.
+                                    </p>
+                                </div>
+                                <a href="https://www.mobitel.lk/tourist-plans" 
+                                   target="_blank" 
+                                   class="inline-block bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded-lg transition-colors">
+                                    🔗 Vai a Mobitel
+                                </a>
+                            </div>
+                            
+                            <div class="bg-white rounded-lg p-4 border border-slate-200">
+                                <h4 class="font-medium text-slate-800 mb-2">🌐 4. Dialog</h4>
+                                <ul class="text-sm text-slate-600 space-y-1 mb-3">
+                                    <li>• <strong>Tourist SIM:</strong> ~1500 LKR (4-5€) per 30GB/30 giorni</li>
+                                    <li>• <strong>Copertura:</strong> Eccellente in tutto il paese</li>
+                                    <li>• <strong>Dove comprare:</strong> Aeroporto, negozi Dialog, supermercati</li>
+                                    <li>• <strong>Tipo:</strong> SIM fisica e eSIM disponibili</li>
+                                    <li>• <strong>Documenti:</strong> Passaporto necessario</li>
+                                </ul>
+                                <a href="https://www.dialog.lk/buy-best-tourist-sim-plan-in-sri-lanka" 
+                                   target="_blank" 
+                                   class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1 rou
